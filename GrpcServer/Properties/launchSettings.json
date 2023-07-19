@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Grpc": {
+      "commandName": "Project",
+      "workingDirectory": "$(TargetDir)",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5023;https://localhost:7191"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+﻿@inject HttpClient Http
+
+<MudImage Src="@imageSrc" Alt="Pokemon Image" Height="@Height" Width="@Width" Style="vertical-align: bottom;" />
+
+@code {
+    /// <summary>
+    /// ポケモンのNo
+    /// </summary>
+    [Parameter]
+    public long PokeNo { get; set; } = 0;
+
+    [Parameter]
+    public int? Height { get; set; }
+
+    [Parameter]
+    public int? Width { get; set; }
+
+    /// <summary>
+    /// 画像
+    /// </summary>
+    private string imageSrc = string.Empty;
+
+    /// <summary>
+    /// パラメータが変わったときに発生するイベント
+    /// 複数パラメータを判別したい場合、個々にメンバ変数を作って保持し、何が変わったか判別する必要がある。
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        // Noから画像を取得
+        Stream imageStream = await Http.GetStreamAsync($"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{PokeNo}.png");
+
+        // ストリームをBase64文字列に変換してSrcにセット
+        using MemoryStream ms = new();
+        imageStream.CopyTo(ms);
+        byte[] imageBytes = ms.ToArray();
+        string imageBase64String = Convert.ToBase64String(imageBytes);
+        imageSrc = $"data:image/jpeg;base64,{imageBase64String}";
+    }
+}

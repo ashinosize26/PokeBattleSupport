@@ -1,0 +1,41 @@
+﻿<MudPaper Height="180px" Class="pl-2 pr-3 py-3">
+    <MudGrid>
+        <MudItem xs="12" sm="4">
+            <MudStack Spacing="2">
+                <PokeImageView PokeNo="@PokeNo" />
+                <MudText Typo="Typo.body2">@PokeName</MudText>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" sm="8">
+            <MudStack Spacing="1">
+                @foreach (var (label, index) in BaseStatLabels.Select((value, index) => (value, index)))
+                {
+                    <MudStack Row="true" Spacing="2">
+                        <MudText Typo="Typo.body2" Style="width: 24px;">@label</MudText>
+                        <MudSlider Size="Size.Small" Value="@BaseStatValues[index]" Variant="Variant.Filled" Min="1" Max="255" Color="@BaseStatBarColor" />
+                        <MudText Typo="Typo.body2" Align="Align.Right" Style="width: 40px;">@BaseStatValues[index]</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+@code{
+    [Parameter]
+    public long PokeNo { get; set; }
+
+    [Parameter]
+    public string PokeName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// H,A,B,C,D,S
+    /// </summary>
+    [Parameter]
+    public long[] BaseStatValues { get; set; } = new long[6];
+
+
+    [Parameter]
+    public Color BaseStatBarColor { get; set; }
+
+    private string[] BaseStatLabels = new string[] { "H", "A", "B", "C", "D", "S" };
+}

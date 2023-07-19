@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcPoke";
+
+package poke;
+
+service PokeSrv {
+  rpc GetPokeNames (Empty) returns (PokeNames);
+  rpc GetPokeTypes(PokeName) returns (PokeTypes);
+  rpc GetPokeBaseStats(PokeBaseStatsKey) returns (PokeBaseStats);
+  rpc GetPokeTypeEffective(PokeTypes) returns (PokeTypeEffective);
+}
+
+message Empty {
+}
+
+message PokeNames {
+	repeated PokeName Items = 1;
+}
+
+message PokeName {
+	string Name = 1;
+}
+
+message PokeTypes {
+	string Name = 1;
+	int64 No = 2;
+	string FirstType = 3;
+	string SecondType = 4;
+}
+
+message PokeBaseStatsKey{
+	int64 Generation = 1;
+	string Name = 2;
+}
+
+message PokeBaseStats {
+	int64 Generation = 1;
+	string Name = 2;
+	int64 No = 3;
+	int64 H = 4;
+	int64 A = 5;
+	int64 B = 6;
+	int64 C = 7;
+	int64 D = 8;
+	int64 S = 9;
+	int64 Total = 10;
+}
+
+message PokeTypeEffective {
+	double NormalValue = 1;
+	double FireValue = 2;
+	double WaterValue = 3;
+	double ElecticValue = 4;
+	double GrassValue = 5;
+	double IceValue = 6;
+	double FightingValue = 7;
+	double PoisonValue = 8;
+	double GroundValue = 9;
+	double FlyingValue = 10;
+	double PsychicValue = 11;
+	double BugValue = 12;
+	double RockValue = 13;
+	double GhostValue = 14;
+	double DragonValue = 15;
+	double DarkValue = 16;
+	double SteelValue = 17;
+	double FairyValue = 18;
+
+}

@@ -1,0 +1,131 @@
+﻿<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels.ToArray()" Width="100%" Height="400px"></MudChart>
+<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Class="pt-6">
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh></MudTh>
+        <MudTh>最速</MudTh>
+        <MudTh>準速</MudTh>
+        <MudTh>無振</MudTh>
+        <MudTh>下降</MudTh>
+        <MudTh>最遅</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="PokemonImage">
+            <PokeImageView PokeNo="@context.No" Width="42" Height="42" />
+        </MudTd>
+        <MudTd>
+            <MudText Typo="Typo.body1">@context.Name</MudText>
+         </MudTd>
+        <MudTd DataLabel="Fastest">
+            <MudText Typo="Typo.body1">@context.FastestSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Fast">
+            <MudText Typo="Typo.body1">@context.FastSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Default">
+            <MudText Typo="Typo.body1">@context.DefaultSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Slow">
+            <MudText Typo="Typo.body1">@context.SlowSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Slowest">
+            <MudText Typo="Typo.body1">@context.SlowestSpeed</MudText>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+@code {
+    [Parameter]
+    public PokeInfoModel[] MyParty { get; set; } = new PokeInfoModel[6];
+
+    [Parameter]
+    public PokeInfoModel[] YourParty { get; set; } = new PokeInfoModel[6];
+
+    private List<string> XAxisLabels = new List<string>();
+
+    private List<ChartSeries> Series = new List<ChartSeries>();
+
+    private List<PokeSpeedRealNumberRowModel> Elements = new List<PokeSpeedRealNumberRowModel>();
+
+    protected override void OnParametersSet()
+    {
+        // 棒グラフのX軸ラベル更新
+        XAxisLabels.Clear();
+        foreach (var item in MyParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        {
+            XAxisLabels.Add(item.Name);
+        };
+        foreach (var item in YourParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        {
+            XAxisLabels.Add(item.Name);
+        };
+
+        // 棒グラフのY軸データ更新
+        Series.Clear();
+        List<double> fastestSpeeds = new List<double>();    // 最速
+        List<double> fastSpeeds = new List<double>();       // 準速
+        List<double> defaultSpeeds = new List<double>();    // 無振
+        foreach (var item in MyParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        {
+            fastestSpeeds.Add(Common.CalcSpeedFastest(item.S));
+            fastSpeeds.Add(Common.CalcSpeedFast(item.S));
+            defaultSpeeds.Add(Common.CalcSpeedDefault(item.S));
+        };
+        foreach (var item in YourParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        {
+            fastestSpeeds.Add(Common.CalcSpeedFastest(item.S));
+            fastSpeeds.Add(Common.CalcSpeedFast(item.S));
+            defaultSpeeds.Add(Common.CalcSpeedDefault(item.S));
+        };
+        Series.Add(new ChartSeries()
+            {
+                Name = "最速",
+                Data = fastestSpeeds.ToArray()
+            });
+        Series.Add(new ChartSeries()
+            {
+                Name = "準速",
+                Data = fastSpeeds.ToArray()
+            });
+        Series.Add(new ChartSeries()
+            {
+                Name = "無振",
+                Data = defaultSpeeds.ToArray()
+            });
+
+
+        // 一覧の更新
+        Elements.Clear();
+        foreach (var item in MyParty)
+        {
+            if (!string.IsNullOrEmpty(item.Name))
+            {
+                Elements.Add(new PokeSpeedRealNumberRowModel()
+                {
+                    No = item.No,
+                    Name = item.Name,
+                    FastestSpeed = Common.CalcSpeedFastest(item.S),
+                    FastSpeed = Common.CalcSpeedFast(item.S),
+                    DefaultSpeed = Common.CalcSpeedDefault(item.S),
+                    SlowSpeed = Common.CalcSpeedSlow(item.S),
+                    SlowestSpeed = Common.CalcSpeedSlowest(item.S)
+                });
+            }
+        };
+        foreach (var item in YourParty)
+        {
+            if (!string.IsNullOrEmpty(item.Name))
+            {
+                Elements.Add(new PokeSpeedRealNumberRowModel()
+                    {
+                        No = item.No,
+                        Name = item.Name,
+                        FastestSpeed = Common.CalcSpeedFastest(item.S),
+                        FastSpeed = Common.CalcSpeedFast(item.S),
+                        DefaultSpeed = Common.CalcSpeedDefault(item.S),
+                        SlowSpeed = Common.CalcSpeedSlow(item.S),
+                        SlowestSpeed = Common.CalcSpeedSlowest(item.S)
+                    });
+            }
+        };
+    }
+}

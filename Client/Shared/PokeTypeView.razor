@@ -1,0 +1,99 @@
+﻿@if (string.IsNullOrEmpty(PokeType))
+{
+    if (ShowSample)
+    {
+        <MudChip Size="Size.Small" Disabled="true">Type</MudChip>
+    }
+}
+else
+{
+    switch (PokeType)
+    {
+        case "ノーマル":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Grey.Default};")">ノーマル</MudChip>
+            break;
+
+        case "ほのお" :
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Orange.Default};")">ほのお</MudChip>
+            break;
+
+        case "みず" :
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Blue.Lighten2};")">みず</MudChip>
+            break;
+
+        case "でんき" :
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Yellow.Darken2};")">でんき</MudChip>
+            break;
+
+        case "くさ":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Green.Darken2};")">くさ</MudChip>
+            break;
+
+        case "こおり" :
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Teal.Accent2};")">こおり</MudChip>
+            break;
+
+        case "かくとう":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.DeepOrange.Darken4};")">かくとう</MudChip>
+            break;
+
+        case "どく":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Purple.Default};")">どく</MudChip>
+            break;
+
+        case "じめん":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Brown.Default};")">じめん</MudChip>
+            break;
+
+        case "ひこう":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Indigo.Accent1};")">ひこう</MudChip>
+            break;
+
+        case "エスパー":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Pink.Accent2};")">エスパー</MudChip>
+            break;
+
+        case "むし":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.LightGreen.Darken1};")">むし</MudChip>
+            break;
+
+        case "いわ":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Lime.Darken4};")">いわ</MudChip>
+            break;
+
+        case "ゴースト":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.DeepPurple.Darken2};")">ゴースト</MudChip>
+            break;
+
+        case "ドラゴン":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.LightBlue.Darken4};")">ドラゴン</MudChip>
+            break;
+
+        case "あく":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Grey.Darken4};")">あく</MudChip>
+            break;
+
+        case "はがね":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.BlueGrey.Lighten1};")">はがね</MudChip>
+            break;
+
+        case "フェアリー":
+            <MudChip Size="Size.Small" Style="@($"color:{Colors.Shades.White}; background:{Colors.Purple.Accent1};")">フェアリー</MudChip>
+            break;
+    }
+}
+
+@code {
+    /// <summary>
+    /// ポケモンのタイプ
+    /// </summary>
+    [Parameter]
+    public string PokeType { get; set; } = string.Empty;
+
+    /// <summary>
+    /// タンプの値がないときにサンプルを表示するか
+    /// 初期表示でサンプルを出したかったが、単タイプのときには隠したかったため追加
+    /// </summary>
+    [Parameter]
+    public bool ShowSample { get; set; } = true;
+}

@@ -1,0 +1,185 @@
+﻿@inject HttpClient Http
+
+<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true">
+    <HeaderContent>
+        <MudTh></MudTh>
+        @foreach (var pokeInfo in Party)
+        {
+            <MudTh Style="vertical-align: top;">
+                <MudStack>
+                    <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
+                    <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                    <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                </MudStack>
+            </MudTh>
+        }
+        <MudTh Style="vertical-align: bottom;">効果抜群</MudTh>
+        <MudTh Style="vertical-align: bottom;">いまひとつ</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="AttackTypeName">
+            <PokeTypeView PokeType="@context.TypeName" />
+        </MudTd>
+        @foreach (var (value, index) in Party.Select((value, index) => (value, index)))
+        {
+            <MudTd DataLabel="@($"Poke{index}")">
+                <MudText Typo="Typo.body1" Color="@context.Marks[index].MarkColor">@context.Marks[index].MarkText</MudText>
+            </MudTd>
+        }
+        <MudTd DataLabel="SuperEffective">
+            <MudText Typo="Typo.body1" Color="@(context.SuperEffectiveCount >= 3 ? Color.Secondary : Color.Default)">@context.SuperEffectiveCount</MudText>
+        </MudTd>
+        <MudTd DataLabel="WeakAgainst">
+            <MudText Typo="Typo.body1" Color="@(context.WeakAgainstCount >= 3 ? Color.Info : Color.Default)">@context.WeakAgainstCount</MudText>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public PokeInfoModel[] Party { get; set; } = new PokeInfoModel[6];
+
+    private IEnumerable<PokeTypeEffectiveRowModel> Elements = new List<PokeTypeEffectiveRowModel>();
+
+    private PokeTypeEffectiveModel[] effectiveList = new PokeTypeEffectiveModel[6];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // ポケモンのタイプ（複合）から、攻撃を受けたときの耐性を取得
+        for (int i = 0; i < 6; i++)
+        {
+            effectiveList[i] = await Http.GetFromJsonAsync<PokeTypeEffectiveModel>($"api/PokeTypeEffective?firstType={Party[i].FirstType}&secondType={Party[i].SecondType}") ?? new PokeTypeEffectiveModel();
+        }
+
+        // パーティの各ポケモンの耐性を、タイプごとにまとめる
+        Elements = new List<PokeTypeEffectiveRowModel>()
+        {
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "ノーマル",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.NormalEffectiveValue)).ToArray(),   // 耐性（倍率）から表示用のマークを取得
+                    SuperEffectiveCount = effectiveList.Count(e => e.NormalEffectiveValue > 1), // 耐性（倍率）が1を超えるポケモンを集計（効果抜群）
+                    WeakAgainstCount = effectiveList.Count(e => e.NormalEffectiveValue < 1),    // 耐性（倍率）が1を下回るポケモンを集計（いまひとつ、効果なし）
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "ほのお",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.FireEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.FireEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.FireEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "みず",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.WaterEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.WaterEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.WaterEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "でんき",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.ElectricEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.ElectricEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.ElectricEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "くさ",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.GrassEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.GrassEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.GrassEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "こおり",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.IceEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.IceEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.IceEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "かくとう",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.FightingEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.FightingEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.FightingEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "どく",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.PoisonEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.PoisonEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.PoisonEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "じめん",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.GroundEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.GroundEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.GroundEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "ひこう",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.FlyingEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.FlyingEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.FlyingEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "エスパー",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.PsychicEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.PsychicEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.PsychicEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "むし",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.BugEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.BugEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.BugEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "いわ",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.RockEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.RockEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.RockEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "ゴースト",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.GhostEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.GhostEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.GhostEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "ドラゴン",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.DragonEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.DragonEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.DragonEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "あく",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.DarkEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.DarkEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.DarkEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "はがね",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.SteelEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.SteelEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.SteelEffectiveValue < 1),
+                },
+            new PokeTypeEffectiveRowModel()
+                {
+                    TypeName = "フェアリー",
+                    Marks = effectiveList.Select(e => Common.GetTypeEffectiveMark(e.FairyEffectiveValue)).ToArray(),
+                    SuperEffectiveCount = effectiveList.Count(e => e.FairyEffectiveValue > 1),
+                    WeakAgainstCount = effectiveList.Count(e => e.FairyEffectiveValue < 1),
+                },
+        };
+    }
+}
