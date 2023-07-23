@@ -1,7 +1,8 @@
 ﻿@page "/"
 @inject HttpClient Http
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<PageTitle>Index</PageTitle>
+<PageTitle>ポケモンバトルサポート</PageTitle>
 @if (pokeNames == null)
 {
     <MudText>Loading...</MudText>
@@ -17,7 +18,7 @@ else
                 @foreach (var pokeInfo in myParty)
                 {
                     <MudItem xs="12" sm="6">
-                        <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
+                        <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo, Common.PartyOwner.I))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
@@ -34,7 +35,7 @@ else
                 @foreach (var pokeInfo in yourParty)
                 {
                     <MudItem xs="12" sm="6">
-                        <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
+                        <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo, Common.PartyOwner.You))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
@@ -45,59 +46,8 @@ else
             </MudGrid>
         </MudItem>            
     </MudGrid>
-    @* 種族値 *@
-    <MudGrid Class="mx-4 my-6">
-        <MudItem xs="12">
-            <MudText Typo="Typo.h5">種族値</MudText>
-        </MudItem>
-        @* 自分 *@
-        <MudItem xs="12" sm="6">
-            <MudGrid>
-                @foreach (var pokeInfo in myParty)
-                {
-                    <MudItem xs="12" sm="6">
-                        <PokeBaseStatsView PokeNo="@pokeInfo.No" PokeName="@pokeInfo.Name" BaseStatValues="@(new long[]{pokeInfo.H, pokeInfo.A, pokeInfo.B, pokeInfo.C, pokeInfo.D, pokeInfo.S})" BaseStatBarColor="@Color.Info"/>
-                    </MudItem>
-                }
-            </MudGrid>
-        </MudItem>
-        @* 相手 *@
-        <MudItem xs="12" sm="6">
-            <MudGrid>
-                @foreach (var pokeInfo in yourParty)
-                {
-                    <MudItem xs="12" sm="6">
-                        <PokeBaseStatsView PokeNo="@pokeInfo.No" PokeName="@pokeInfo.Name" BaseStatValues="@(new long[]{pokeInfo.H, pokeInfo.A, pokeInfo.B, pokeInfo.C, pokeInfo.D, pokeInfo.S})" BaseStatBarColor="@Color.Secondary" />
-                    </MudItem>
-                }
-            </MudGrid>
-        </MudItem>
-    </MudGrid>
-    @* S実数値 *@
-    <MudGrid Class="mx-4 my-6">
-        <MudItem xs="12">
-            <MudText Typo="Typo.h5">S実数値</MudText>
-        </MudItem>
-        @* 自分&相手 *@
-        <MudItem xs="12">
-            <PokeSpeedRealNumberChart MyParty="@myParty" YourParty="@yourParty" />
-        </MudItem>
-    </MudGrid>
-    @* タイプ相性 *@
-    <MudGrid Class="mx-4 my-6">
-        <MudItem xs="12">
-            <MudText Typo="Typo.h5">タイプ相性</MudText>
-        </MudItem>
-        @* 自分 *@
-        <MudItem xs="12">
-            <PokeTypeEffectiveView Party="@myParty"/>
-        </MudItem>
-        @* 相手 *@
-        <MudItem xs="12">
-            <PokeTypeEffectiveView Party="@yourParty" />
-        </MudItem>
-    </MudGrid>
-}   
+}
+
 @code {
     /// <summary>
     /// 全てのポケモンの名前のリスト
@@ -107,28 +57,12 @@ else
     /// <summary>
     /// 自分のパーティ
     /// </summary>
-    private PokeInfoModel[] myParty = new PokeInfoModel[6]
-    {
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel()
-    };
+    private PokeInfoModel[] myParty = Array.Empty<PokeInfoModel>();
 
     /// <summary>
     /// 相手のパーティ
     /// </summary>
-    private PokeInfoModel[] yourParty = new PokeInfoModel[6]
-    {
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel(),
-        new PokeInfoModel()
-    };
+    private PokeInfoModel[] yourParty = Array.Empty<PokeInfoModel>();
 
     /// <summary>
     /// コンストラクタ
@@ -138,6 +72,10 @@ else
     {
         // 全てのポケモンの名前を取得
         pokeNames = await Http.GetFromJsonAsync<string[]>("api/PokeNames") ?? Array.Empty<string>();
+
+        // Session Storageからパーティ情報の読み込み
+        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
     }
 
     /// <summary>
@@ -164,47 +102,61 @@ else
     /// <param name="selectedValue"></param>
     /// <param name="pokeInfo"></param>
     /// <returns></returns>
-    private async Task HandlePokeSelected(string selectedValue, PokeInfoModel pokeInfo)
+    private async Task HandlePokeSelected(string selectedValue, PokeInfoModel pokeInfo, Common.PartyOwner partyOwner)
     {
-        // 初期化
+        // 選択された名前をセット
         pokeInfo.Name = selectedValue;
-        pokeInfo.No = 0;
-        pokeInfo.FirstType = string.Empty;
-        pokeInfo.SecondType = string.Empty;
-        pokeInfo.H = 0;
-        pokeInfo.A = 0;
-        pokeInfo.B = 0;
-        pokeInfo.C = 0;
-        pokeInfo.D = 0;
-        pokeInfo.S = 0;
-        pokeInfo.Total = 0;
 
-        // 選択が解除されていた場合、なにもしない
+        // その他の情報をセット
         if (string.IsNullOrEmpty(pokeInfo.Name))
         {
-            return;
+            // 初期化
+            pokeInfo.No = 0;
+            pokeInfo.FirstType = string.Empty;
+            pokeInfo.SecondType = string.Empty;
+            pokeInfo.H = 0;
+            pokeInfo.A = 0;
+            pokeInfo.B = 0;
+            pokeInfo.C = 0;
+            pokeInfo.D = 0;
+            pokeInfo.S = 0;
+            pokeInfo.Total = 0;
+        }
+        else
+        {
+            // No、タイプを取得
+            PokeTypeModel? types = await Http.GetFromJsonAsync<PokeTypeModel>($"api/PokeTypes?name={pokeInfo.Name}");
+            if (types is not null)
+            {
+                pokeInfo.No = types.No;
+                pokeInfo.FirstType = types.FirstType;
+                pokeInfo.SecondType = types.SecondType;
+            }
+
+            // 種族値を取得
+            PokeBaseStatsModel? baseStats = await Http.GetFromJsonAsync<PokeBaseStatsModel>($"api/PokeBaseStats?name={pokeInfo.Name}&generation={Common.CurrentGeneration}");
+            if (baseStats is not null)
+            {
+                pokeInfo.H = baseStats.H;
+                pokeInfo.A = baseStats.A;
+                pokeInfo.B = baseStats.B;
+                pokeInfo.C = baseStats.C;
+                pokeInfo.D = baseStats.D;
+                pokeInfo.S = baseStats.S;
+                pokeInfo.Total = baseStats.Total;
+            }
         }
 
-        // No、タイプを取得
-        PokeTypeModel? types = await Http.GetFromJsonAsync<PokeTypeModel>($"api/PokeTypes?name={pokeInfo.Name}");
-        if (types is not null)
+        // パーティ情報をsession storageに保持
+        switch (partyOwner)
         {
-            pokeInfo.No = types.No;
-            pokeInfo.FirstType = types.FirstType;
-            pokeInfo.SecondType = types.SecondType;
-        }
+            case Common.PartyOwner.I:
+                await sessionStorage.SetItemAsync("myParty", myParty);
+                break;
 
-        // 種族値を取得
-        PokeBaseStatsModel? baseStats = await Http.GetFromJsonAsync<PokeBaseStatsModel>($"api/PokeBaseStats?name={pokeInfo.Name}&generation={Common.CurrentGeneration}");
-        if (baseStats is not null)
-        {
-            pokeInfo.H = baseStats.H;
-            pokeInfo.A = baseStats.A;
-            pokeInfo.B = baseStats.B;
-            pokeInfo.C = baseStats.C;
-            pokeInfo.D = baseStats.D;
-            pokeInfo.S = baseStats.S;
-            pokeInfo.Total = baseStats.Total;
+            case Common.PartyOwner.You:
+                await sessionStorage.SetItemAsync("yourParty", yourParty);
+                break;
         }
     }
 }

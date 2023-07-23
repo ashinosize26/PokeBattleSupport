@@ -1,0 +1,22 @@
+﻿@page "/typeeffective"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@* タイプ相性 *@
+<PageTitle>タイプ耐性</PageTitle>
+<MudGrid Class="mx-4 my-6">
+    <MudItem xs="12">
+        <MudText Typo="Typo.h5">タイプ相性</MudText>
+    </MudItem>
+    @* 自分 *@
+    <MudItem xs="12">
+        <PokeTypeEffectiveView partyOwner="@Common.PartyOwner.I" />
+    </MudItem>
+    @* 相手 *@
+    <MudItem xs="12">
+        <PokeTypeEffectiveView partyOwner="@Common.PartyOwner.You" />
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}

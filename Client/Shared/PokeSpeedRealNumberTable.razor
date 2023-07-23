@@ -1,0 +1,98 @@
+﻿@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Class="pt-6">
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh></MudTh>
+        <MudTh>最速</MudTh>
+        <MudTh>準速</MudTh>
+        <MudTh>無振</MudTh>
+        <MudTh>下降</MudTh>
+        <MudTh>最遅</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="PokemonImage">
+            <PokeImageView PokeNo="@context.No" Width="42" Height="42" />
+        </MudTd>
+        <MudTd>
+            <MudText Typo="Typo.body1">@context.Name</MudText>
+        </MudTd>
+        <MudTd DataLabel="Fastest">
+            <MudText Typo="Typo.body1">@context.FastestSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Fast">
+            <MudText Typo="Typo.body1">@context.FastSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Default">
+            <MudText Typo="Typo.body1">@context.DefaultSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Slow">
+            <MudText Typo="Typo.body1">@context.SlowSpeed</MudText>
+        </MudTd>
+        <MudTd DataLabel="Slowest">
+            <MudText Typo="Typo.body1">@context.SlowestSpeed</MudText>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+@code {
+    /// <summary>
+    /// テーブルデータ
+    /// </summary>
+    private List<PokeSpeedRealNumberRowModel> Elements = new List<PokeSpeedRealNumberRowModel>();
+
+    /// <summary>
+    /// 自分のパーティ
+    /// </summary>
+    private PokeInfoModel[] myParty = Array.Empty<PokeInfoModel>();
+
+    /// <summary>
+    /// 相手のパーティ
+    /// </summary>
+    private PokeInfoModel[] yourParty = Array.Empty<PokeInfoModel>();
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        // Session Storageからパーティ情報の読み込み
+        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+
+        // 一覧の更新（自分のパーティと相手のパーティを並べて表示）
+        Elements.Clear();
+        foreach (var pokeInfo in myParty)
+        {
+            if (!string.IsNullOrEmpty(pokeInfo.Name))
+            {
+                Elements.Add(new PokeSpeedRealNumberRowModel()
+                    {
+                        No = pokeInfo.No,
+                        Name = pokeInfo.Name,
+                        FastestSpeed = Common.CalcSpeedFastest(pokeInfo.S),
+                        FastSpeed = Common.CalcSpeedFast(pokeInfo.S),
+                        DefaultSpeed = Common.CalcSpeedDefault(pokeInfo.S),
+                        SlowSpeed = Common.CalcSpeedSlow(pokeInfo.S),
+                        SlowestSpeed = Common.CalcSpeedSlowest(pokeInfo.S)
+                    });
+            }
+        };
+        foreach (var pokeInfo in yourParty)
+        {
+            if (!string.IsNullOrEmpty(pokeInfo.Name))
+            {
+                Elements.Add(new PokeSpeedRealNumberRowModel()
+                    {
+                        No = pokeInfo.No,
+                        Name = pokeInfo.Name,
+                        FastestSpeed = Common.CalcSpeedFastest(pokeInfo.S),
+                        FastSpeed = Common.CalcSpeedFast(pokeInfo.S),
+                        DefaultSpeed = Common.CalcSpeedDefault(pokeInfo.S),
+                        SlowSpeed = Common.CalcSpeedSlow(pokeInfo.S),
+                        SlowestSpeed = Common.CalcSpeedSlowest(pokeInfo.S)
+                    });
+            }
+        };
+    }
+}

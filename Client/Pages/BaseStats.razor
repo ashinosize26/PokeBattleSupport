@@ -1,0 +1,55 @@
+﻿@page "/basestats"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@* 種族値 *@
+<PageTitle>種族値</PageTitle>
+<MudGrid Class="mx-4 my-6">
+    <MudItem xs="12">
+        <MudText Typo="Typo.h5">種族値</MudText>
+    </MudItem>
+    @* 自分 *@
+    <MudItem xs="12" sm="6">
+        <MudGrid>
+            @foreach (var pokeInfo in myParty)
+            {
+                <MudItem xs="12" sm="6">
+                    <PokeBaseStatsView PokeNo="@pokeInfo.No" PokeName="@pokeInfo.Name" BaseStatValues="@(new long[]{pokeInfo.H, pokeInfo.A, pokeInfo.B, pokeInfo.C, pokeInfo.D, pokeInfo.S})" BaseStatBarColor="@Color.Info" />
+                </MudItem>
+            }
+        </MudGrid>
+    </MudItem>
+    @* 相手 *@
+    <MudItem xs="12" sm="6">
+        <MudGrid>
+            @foreach (var pokeInfo in yourParty)
+            {
+                <MudItem xs="12" sm="6">
+                    <PokeBaseStatsView PokeNo="@pokeInfo.No" PokeName="@pokeInfo.Name" BaseStatValues="@(new long[]{pokeInfo.H, pokeInfo.A, pokeInfo.B, pokeInfo.C, pokeInfo.D, pokeInfo.S})" BaseStatBarColor="@Color.Secondary" />
+                </MudItem>
+            }
+        </MudGrid>
+    </MudItem>
+</MudGrid>
+
+@code{
+    /// <summary>
+    /// 自分のパーティ
+    /// </summary>
+    private PokeInfoModel[] myParty = Array.Empty<PokeInfoModel>();
+
+    /// <summary>
+    /// 相手のパーティ
+    /// </summary>
+    private PokeInfoModel[] yourParty = Array.Empty<PokeInfoModel>();
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        // Session Storageからパーティ情報の読み込み
+        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+    }
+}

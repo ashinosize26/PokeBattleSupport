@@ -12,6 +12,15 @@ namespace PokeBattleSupport.Client.Common
         public const long CurrentGeneration = 9;
 
         /// <summary>
+        /// パーティの所有者
+        /// </summary>
+        public enum PartyOwner
+        {
+            I,
+            You
+        }
+
+        /// <summary>
         /// タイプの画像のパスを取得
         /// </summary>
         /// <param name="japaneseTypeName">タイプ名（日本語）</param>
