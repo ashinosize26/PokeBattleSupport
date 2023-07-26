@@ -1,0 +1,48 @@
+﻿@page "/typetable"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@* タイプ相性 *@
+<PageTitle>タイプ相性</PageTitle>
+<MudGrid Class="mx-4 my-6">
+    <MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true">
+@*        <HeaderContent>
+            <MudTh></MudTh>
+            @foreach (var pokeInfo in party)
+            {
+                <MudTh Style="vertical-align: top;">
+                    <MudStack>
+                        <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
+                        <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                        <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                    </MudStack>
+                </MudTh>
+            }
+            <MudTh Style="vertical-align: bottom;">効果抜群</MudTh>
+            <MudTh Style="vertical-align: bottom;">いまひとつ</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="AttackTypeName">
+                <PokeTypeView PokeType="@context.TypeName" />
+            </MudTd>
+            @foreach (var (value, index) in party.Select((value, index) => (value, index)))
+            {
+                <MudTd DataLabel="@($"Poke{index}")">
+                    <MudText Typo="Typo.body1" Color="@context.Marks[index].MarkColor">@context.Marks[index].MarkText</MudText>
+                </MudTd>
+            }
+            <MudTd DataLabel="SuperEffective">
+                <MudText Typo="Typo.body1" Color="@(context.SuperEffectiveCount >= 3 ? Color.Secondary : Color.Default)">@context.SuperEffectiveCount</MudText>
+            </MudTd>
+            <MudTd DataLabel="WeakAgainst">
+                <MudText Typo="Typo.body1" Color="@(context.WeakAgainstCount >= 3 ? Color.Info : Color.Default)">@context.WeakAgainstCount</MudText>
+            </MudTd>
+        </RowTemplate>*@
+    </MudTable>
+</MudGrid>
+
+@code {
+    /// <summary>
+    /// テーブルデータ
+    /// </summary>
+    private List<PokeTypeEffectiveRowModel> Elements = new List<PokeTypeEffectiveRowModel>();
+}

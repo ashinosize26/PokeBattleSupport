@@ -125,7 +125,12 @@ else
         else
         {
             // No、タイプを取得
-            PokeTypeModel? types = await Http.GetFromJsonAsync<PokeTypeModel>($"api/PokeTypes?name={pokeInfo.Name}");
+            var typesParameters = new Dictionary<string, string>()
+                {
+                    ["name"] = pokeInfo.Name
+                };
+            var typesUrl = $"api/PokeType?{await new FormUrlEncodedContent(typesParameters).ReadAsStringAsync()}";
+            PokeTypeModel? types = await Http.GetFromJsonAsync<PokeTypeModel>(typesUrl);
             if (types is not null)
             {
                 pokeInfo.No = types.No;
@@ -134,7 +139,13 @@ else
             }
 
             // 種族値を取得
-            PokeBaseStatsModel? baseStats = await Http.GetFromJsonAsync<PokeBaseStatsModel>($"api/PokeBaseStats?name={pokeInfo.Name}&generation={Common.CurrentGeneration}");
+            var baseStatsParameters = new Dictionary<string, string>()
+                {
+                    ["name"] = pokeInfo.Name,
+                    ["generation"] = Common.CurrentGeneration.ToString()
+                };
+            var baseStatsUrl = $"api/PokeBaseStats?{await new FormUrlEncodedContent(baseStatsParameters).ReadAsStringAsync()}";
+            PokeBaseStatsModel? baseStats = await Http.GetFromJsonAsync<PokeBaseStatsModel>(baseStatsUrl);
             if (baseStats is not null)
             {
                 pokeInfo.H = baseStats.H;
