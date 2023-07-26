@@ -57,5 +57,36 @@ namespace PokeBattleSupport.Server.Controllers
                 FairyEffectiveValue = effectiveValues.FairyValue,
             };
         }
+
+        [HttpGet("EffectiveTable")]
+        public async Task<IEnumerable<TypeEffectiveModel>> GetEffectiveTableAsync()
+        {
+            using var channel = GrpcChannel.ForAddress("https://localhost:7191");
+            var client = new PokeSrv.PokeSrvClient(channel);
+            TypeEffectiveTable typeEffectiveTable = await client.GetTypeEffectiveTableAsync(new Empty());
+
+            return typeEffectiveTable.Items.Select(x => new TypeEffectiveModel()
+            {
+                AttackType = x.AttackType,
+                NormalEffectiveValue = x.NormalValue,
+                FireEffectiveValue = x.FireValue,
+                WaterEffectiveValue = x.WaterValue,
+                ElectricEffectiveValue = x.ElecticValue,
+                GrassEffectiveValue = x.GrassValue,
+                IceEffectiveValue = x.IceValue,
+                FightingEffectiveValue = x.FightingValue,
+                PoisonEffectiveValue = x.PoisonValue,
+                GroundEffectiveValue = x.GroundValue,
+                FlyingEffectiveValue = x.FlyingValue,
+                PsychicEffectiveValue = x.PsychicValue,
+                BugEffectiveValue = x.BugValue,
+                RockEffectiveValue = x.RockValue,
+                GhostEffectiveValue = x.GhostValue,
+                DragonEffectiveValue = x.DragonValue,
+                DarkEffectiveValue = x.DarkValue,
+                SteelEffectiveValue = x.SteelValue,
+                FairyEffectiveValue = x.FairyValue,
+            });
+        }
     }
 }

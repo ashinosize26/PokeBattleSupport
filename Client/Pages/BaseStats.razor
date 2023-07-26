@@ -49,7 +49,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Session Storageからパーティ情報の読み込み
-        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
-        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
+        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
     }
 }

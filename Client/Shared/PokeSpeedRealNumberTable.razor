@@ -1,6 +1,6 @@
 ﻿@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Class="pt-6">
+<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Class="pt-6" Striped="true" Bordered="true">
     <HeaderContent>
         <MudTh></MudTh>
         <MudTh></MudTh>
@@ -57,8 +57,8 @@
     protected override async Task OnInitializedAsync()
     {
         // Session Storageからパーティ情報の読み込み
-        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
-        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel(), new PokeInfoModel() };
+        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
+        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
 
         // 一覧の更新（自分のパーティと相手のパーティを並べて表示）
         Elements.Clear();

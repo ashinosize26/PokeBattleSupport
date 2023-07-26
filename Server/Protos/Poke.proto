@@ -9,6 +9,7 @@ service PokeSrv {
   rpc GetPokeTypes(PokeName) returns (PokeTypes);
   rpc GetPokeBaseStats(PokeBaseStatsKey) returns (PokeBaseStats);
   rpc GetPokeTypeEffective(PokeTypes) returns (PokeTypeEffective);
+  rpc GetTypeEffectiveTable(Empty) returns (TypeEffectiveTable);
 }
 
 message Empty {
@@ -66,5 +67,30 @@ message PokeTypeEffective {
 	double DarkValue = 16;
 	double SteelValue = 17;
 	double FairyValue = 18;
+}
 
+message TypeEffectiveTable{
+	repeated TypeEffective Items = 1;
+}
+
+message TypeEffective {
+	string AttackType = 1;
+	double NormalValue = 2;
+	double FireValue = 3;
+	double WaterValue = 4;
+	double ElecticValue = 5;
+	double GrassValue = 6;
+	double IceValue = 7;
+	double FightingValue = 8;
+	double PoisonValue = 9;
+	double GroundValue = 10;
+	double FlyingValue = 11;
+	double PsychicValue = 12;
+	double BugValue = 13;
+	double RockValue = 14;
+	double GhostValue = 15;
+	double DragonValue = 16;
+	double DarkValue = 17;
+	double SteelValue = 18;
+	double FairyValue = 19;
 }

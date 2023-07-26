@@ -1,0 +1,79 @@
+﻿@page "/typeeffectivetable"
+@inject HttpClient Http
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@* タイプ相性表 *@
+<PageTitle>タイプ相性表</PageTitle>
+<MudGrid Class="mx-4 my-6">
+    <MudTable Items="@elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Striped="true" Bordered="true">
+        <HeaderContent>
+            <MudTh></MudTh>
+            @foreach (var element in elements)
+            {
+                <MudTh>
+                    <PokeTypeView PokeType="@element.AttackTypeName" SimpleText="true"/>
+                </MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="AttackTypeName">
+                <PokeTypeView PokeType="@context.AttackTypeName" SimpleText="true"/>
+            </MudTd>
+            @foreach (var (value, index) in elements.Select((value, index) => (value, index)))
+            {
+                <MudTd DataLabel="@($"Type{index}")">
+                    <MudText Typo="Typo.h6" Color="@context.Marks[index].MarkColor" Align="Align.Center">@context.Marks[index].MarkText</MudText>
+                </MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
+</MudGrid>
+
+@code {
+    /// <summary>
+    /// テーブルデータ
+    /// </summary>
+    private List<TypeEffectiveRowModel> elements = new();
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        // タイプ相性データを取得
+        List <TypeEffectiveModel> typeEffectiveList = await Http.GetFromJsonAsync<List<TypeEffectiveModel>>("api/PokeType/EffectiveTable") ?? new();
+
+        // タイプ相性表を作成
+        foreach (var typeEffective in typeEffectiveList)
+        {
+
+            TypeEffectiveRowModel typeEffectiveRowModel = new()
+                {
+                    AttackTypeName = typeEffective.AttackType,
+                    Marks = new TypeEffectiveMarkModel[18]
+                    {
+                        Common.GetTypeEffectiveMark(typeEffective.NormalEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.FireEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.WaterEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.ElectricEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.GrassEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.IceEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.FightingEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.PoisonEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.GroundEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.FlyingEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.PsychicEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.BugEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.RockEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.GhostEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.DragonEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.DarkEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.SteelEffectiveValue),
+                        Common.GetTypeEffectiveMark(typeEffective.FairyEffectiveValue)
+                    }
+                };
+            elements.Add(typeEffectiveRowModel);
+        }
+    }
+}

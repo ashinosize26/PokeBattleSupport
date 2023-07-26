@@ -271,5 +271,58 @@ namespace Grpc.Services
 
             return Task.FromResult(responseData);
         }
+
+        public override Task<TypeEffectiveTable> GetTypeEffectiveTable(Empty request, ServerCallContext context)
+        {
+            var responseData = new TypeEffectiveTable();
+
+            {
+                // DB接続先情報
+                var sqlConnectionSb = new SQLiteConnectionStringBuilder() { DataSource = "poke.db" };
+
+                // DB接続に必要なインスタンスの生成
+                using var connection = new SQLiteConnection(sqlConnectionSb.ToString());
+
+                // 接続開始
+                connection.Open();
+
+                // SQL実行に必要なインスタンスの生成
+                using var command = connection.CreateCommand();
+
+                // SELECT文の実行
+                command.CommandText = "SELECT ATTACK_TYPE, ノーマル, ほのお, みず, でんき, くさ, こおり, かくとう, どく, じめん, ひこう, エスパー, むし, いわ, ゴースト, ドラゴン, あく, はがね, フェアリー FROM TYPE_EFFECTIVE ORDER BY TYPE_NO";
+                using var reader = command.ExecuteReader();
+
+                // 1行ずつデータを取得
+                while (reader.Read())
+                {
+                    var typeEffective = new TypeEffective()
+                        {
+                            AttackType    = reader["ATTACK_TYPE"].ToString(),
+                            NormalValue   = (double)reader["ノーマル"],
+                            FireValue     = (double)reader["ほのお"],
+                            WaterValue    = (double)reader["みず"],
+                            ElecticValue  = (double)reader["でんき"],
+                            GrassValue    = (double)reader["くさ"],
+                            IceValue      = (double)reader["こおり"],
+                            FightingValue = (double)reader["かくとう"],
+                            PoisonValue   = (double)reader["どく"],
+                            GroundValue   = (double)reader["じめん"],
+                            FlyingValue   = (double)reader["ひこう"],
+                            PsychicValue  = (double)reader["エスパー"],
+                            BugValue      = (double)reader["むし"],
+                            RockValue     = (double)reader["いわ"],
+                            GhostValue    = (double)reader["ゴースト"],
+                            DragonValue   = (double)reader["ドラゴン"],
+                            DarkValue     = (double)reader["あく"],
+                            SteelValue    = (double)reader["はがね"],
+                            FairyValue    = (double)reader["フェアリー"],
+                        };
+                    responseData.Items.Add(typeEffective);
+                }
+            }
+
+            return Task.FromResult(responseData);
+        }
     }
 }

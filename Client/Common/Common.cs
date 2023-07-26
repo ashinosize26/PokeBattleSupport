@@ -115,9 +115,9 @@ namespace PokeBattleSupport.Client.Common
         /// </summary>
         /// <param name="TypeEffectiveValue"></param>
         /// <returns></returns>
-        public static PokeTypeEffectiveMarkModel GetTypeEffectiveMark(double TypeEffectiveValue)
+        public static TypeEffectiveMarkModel GetTypeEffectiveMark(double TypeEffectiveValue)
         {
-            PokeTypeEffectiveMarkModel mark = new();
+            TypeEffectiveMarkModel mark = new();
 
             switch (TypeEffectiveValue)
             {
@@ -148,7 +148,7 @@ namespace PokeBattleSupport.Client.Common
 
                 case 0:
                     mark.MarkText = "×";
-                    mark.MarkColor = MudBlazor.Color.Info;
+                    mark.MarkColor = MudBlazor.Color.Default;
                     break;
 
                 default:
@@ -165,6 +165,7 @@ namespace PokeBattleSupport.Client.Common
         /// <returns></returns>
         public static double CalcSpeedFastest(double baseStat)
         {
+            if (baseStat == 0) return 0;
             return Math.Floor((baseStat + 52) * 1.1);
         }
 
@@ -175,6 +176,7 @@ namespace PokeBattleSupport.Client.Common
         /// <returns></returns>
         public static double CalcSpeedFast(double baseStat)
         {
+            if (baseStat == 0) return 0;
             return baseStat + 52;
         }
 
@@ -185,6 +187,7 @@ namespace PokeBattleSupport.Client.Common
         /// <returns></returns>
         public static double CalcSpeedDefault(double baseStat)
         {
+            if (baseStat == 0) return 0;
             return baseStat + 20;
         }
 
@@ -195,6 +198,7 @@ namespace PokeBattleSupport.Client.Common
         /// <returns></returns>
         public static double CalcSpeedSlow(double baseStat)
         {
+            if (baseStat == 0) return 0;
             return Math.Floor((baseStat + 20) * 0.9);
         }
 
@@ -205,6 +209,7 @@ namespace PokeBattleSupport.Client.Common
         /// <returns></returns>
         public static double CalcSpeedSlowest(double baseStat)
         {
+            if (baseStat == 0) return 0;
             return Math.Floor((baseStat + 5) * 0.9);
         }
     }

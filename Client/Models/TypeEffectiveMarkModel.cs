@@ -1,6 +1,6 @@
 ﻿namespace PokeBattleSupport.Client.Models
 {
-    public class PokeTypeEffectiveMarkModel
+    public class TypeEffectiveMarkModel
     {
         public string MarkText { get; set; } = string.Empty;
 
