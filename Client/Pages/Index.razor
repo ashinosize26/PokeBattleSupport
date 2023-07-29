@@ -27,6 +27,7 @@ else
                     </MudItem>                    
                 }
             </MudGrid>
+            <MudButton Class="mt-10" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => HandleClearClicked(Common.PartyOwner.I))">パーティのクリア</MudButton>
         </MudItem>
         @* 相手 *@
         <MudItem xs="12" sm="6">
@@ -44,6 +45,7 @@ else
                     </MudItem>
                 }
             </MudGrid>
+            <MudButton Class="mt-10" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => HandleClearClicked(Common.PartyOwner.You))">パーティのクリア</MudButton>
         </MudItem>            
     </MudGrid>
 }
@@ -162,6 +164,25 @@ else
 
             case Common.PartyOwner.You:
                 await sessionStorage.SetItemAsync("yourParty", yourParty);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// パーティクリアボタンが押された時のコールバック用
+    /// </summary>
+    /// <returns></returns>
+    private void HandleClearClicked(Common.PartyOwner partyOwner)
+    {
+        // パーティ情報をsession storageに保持
+        switch (partyOwner)
+        {
+            case Common.PartyOwner.I:
+                myParty = new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                break;
+
+            case Common.PartyOwner.You:
+                yourParty = new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
                 break;
         }
     }
