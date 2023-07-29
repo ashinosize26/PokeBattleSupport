@@ -4,14 +4,15 @@
 
 @code {
     /// <summary>
-    /// 自分のパーティ
+    /// パーティ所有者
     /// </summary>
-    private PokeInfoModel[] myParty = Array.Empty<PokeInfoModel>();
+    [Parameter]
+    public Common.PartyOwner PartyOwner { get; set; }
 
     /// <summary>
-    /// 相手のパーティ
+    /// パーティ
     /// </summary>
-    private PokeInfoModel[] yourParty = Array.Empty<PokeInfoModel>();
+    private PokeInfoModel[] party = Array.Empty<PokeInfoModel>();
 
     /// <summary>
     /// X軸のラベル
@@ -30,36 +31,48 @@
     protected override async Task OnInitializedAsync()
     {
         // Session Storageからパーティ情報の読み込み
-        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
-        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
+        switch (PartyOwner)
+        {
+            case Common.PartyOwner.I:
+                party = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                break;
 
-        // 棒グラフのX軸ラベル更新（自分のパーティと相手のパーティを並べて表示）
+            case Common.PartyOwner.You:
+                party = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                break;
+        }
+
+        // 棒グラフのX軸を作成（パーティのポケモン）
         XAxisLabels.Clear();
-        foreach (var item in myParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        foreach (var partyInfo in party)
         {
-            XAxisLabels.Add(item.Name);
-        };
-        foreach (var item in yourParty.Where(x => !string.IsNullOrEmpty(x.Name)))
-        {
-            XAxisLabels.Add(item.Name);
+            // パーティ未選択の場合は非表示とする
+            if (string.IsNullOrEmpty(partyInfo.Name))
+            {
+                continue;
+            }
+
+            // ()の前で改行しX軸に追加
+            XAxisLabels.Add(partyInfo.Name);
         };
 
-        // 棒グラフのY軸データ更新
+        // 棒グラフのY軸データを作成（ポケモンのS実数値）
         Series.Clear();
         List<double> fastestSpeeds = new List<double>();    // 最速
         List<double> fastSpeeds = new List<double>();       // 準速
         List<double> defaultSpeeds = new List<double>();    // 無振
-        foreach (var item in myParty.Where(x => !string.IsNullOrEmpty(x.Name)))
+        foreach (var partyInfo in party)
         {
-            fastestSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fastest));
-            fastSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fast));
-            defaultSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Default));
-        };
-        foreach (var item in yourParty.Where(x => !string.IsNullOrEmpty(x.Name)))
-        {
-            fastestSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fastest));
-            fastSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fast));
-            defaultSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Default));
+            // パーティ未選択の場合は非表示とする
+            if (string.IsNullOrEmpty(partyInfo.Name))
+            {
+                continue;
+            }
+
+            // S実数値を計算してY軸データに追加
+            fastestSpeeds.Add(Common.CalcSpeedRealNumber((int)partyInfo.S, Common.SpeedRank.Fastest));
+            fastSpeeds.Add(Common.CalcSpeedRealNumber((int)partyInfo.S, Common.SpeedRank.Fast));
+            defaultSpeeds.Add(Common.CalcSpeedRealNumber((int)partyInfo.S, Common.SpeedRank.Default));
         };
         Series.Add(new ChartSeries()
             {

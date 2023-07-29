@@ -2,15 +2,18 @@
 
 @* S実数値 *@
 <PageTitle>S実数値</PageTitle>
-<MudContainer>
-    <MudGrid Class="px-16 py-10">
-        @* 自分&相手 *@
-        <MudItem xs="12">
-            <PokeSpeedRealNumberChart/>
-            <PokeSpeedRealNumberTable/>
-        </MudItem>
-    </MudGrid>
-</MudContainer>
+<MudGrid Class="px-10 py-10">
+    @* 自分 *@
+    <MudItem xs="12" sm="6">
+        <PokeSpeedRealNumberChart PartyOwner="@Common.PartyOwner.I" />
+        <PokeSpeedRealNumberTable PartyOwner="@Common.PartyOwner.I" />
+    </MudItem>
+    @* 相手 *@
+    <MudItem xs="12" sm="6">
+        <PokeSpeedRealNumberChart PartyOwner="@Common.PartyOwner.You" />
+        <PokeSpeedRealNumberTable PartyOwner="@Common.PartyOwner.You" />
+    </MudItem>
+</MudGrid>
 
 @code {
 

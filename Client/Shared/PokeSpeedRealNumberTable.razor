@@ -36,19 +36,20 @@
 </MudTable>
 @code {
     /// <summary>
+    /// パーティ所有者
+    /// </summary>
+    [Parameter]
+    public Common.PartyOwner PartyOwner { get; set; }
+
+    /// <summary>
+    /// パーティ
+    /// </summary>
+    private PokeInfoModel[] party = Array.Empty<PokeInfoModel>();
+
+    /// <summary>
     /// テーブルデータ
     /// </summary>
     private List<PokeSpeedRealNumberRowModel> Elements = new List<PokeSpeedRealNumberRowModel>();
-
-    /// <summary>
-    /// 自分のパーティ
-    /// </summary>
-    private PokeInfoModel[] myParty = Array.Empty<PokeInfoModel>();
-
-    /// <summary>
-    /// 相手のパーティ
-    /// </summary>
-    private PokeInfoModel[] yourParty = Array.Empty<PokeInfoModel>();
 
     /// <summary>
     /// コンストラクタ
@@ -57,29 +58,20 @@
     protected override async Task OnInitializedAsync()
     {
         // Session Storageからパーティ情報の読み込み
-        myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
-        yourParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
-
-        // 一覧の更新（自分のパーティと相手のパーティを並べて表示）
-        Elements.Clear();
-        foreach (var pokeInfo in myParty)
+        switch (PartyOwner)
         {
-            if (!string.IsNullOrEmpty(pokeInfo.Name))
-            {
-                Elements.Add(new PokeSpeedRealNumberRowModel()
-                    {
-                        No = pokeInfo.No,
-                        Name = pokeInfo.Name,
-                        FastestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fastest),
-                        FastSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fast),
-                        DefaultSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Default),
-                        SlowSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slow),
-                        SlowestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slowest),
-                        SpeedRank = pokeInfo.SpeedRank,
-                    });
-            }
-        };
-        foreach (var pokeInfo in yourParty)
+            case Common.PartyOwner.I:
+                party = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                break;
+
+            case Common.PartyOwner.You:
+                party = await sessionStorage.GetItemAsync<PokeInfoModel[]>("yourParty") ?? new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                break;
+        }
+
+        // テーブルの行データの作成
+        Elements.Clear();
+        foreach (var pokeInfo in party)
         {
             if (!string.IsNullOrEmpty(pokeInfo.Name))
             {

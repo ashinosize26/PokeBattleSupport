@@ -41,7 +41,7 @@
     /// パーティ所有者
     /// </summary>
     [Parameter]
-    public Common.PartyOwner partyOwner { get; set; }
+    public Common.PartyOwner PartyOwner { get; set; }
 
     /// <summary>
     /// パーティ
@@ -65,7 +65,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Session Storageからパーティ情報の読み込み
-        switch (partyOwner)
+        switch (PartyOwner)
         {
             case Common.PartyOwner.I:
                 party = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
