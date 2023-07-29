@@ -23,5 +23,7 @@
         public long S { get; set; }
 
         public long Total { get; set; }
+
+        public Common.Common.SpeedRank SpeedRank { get; set; } = Common.Common.SpeedRank.Unknown;
     }
 }

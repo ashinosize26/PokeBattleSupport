@@ -6,14 +6,16 @@
 
         public string Name { get; set; } = string.Empty;
 
-        public double FastestSpeed { get; set; }
+        public int FastestSpeed { get; set; }
 
-        public double FastSpeed { get; set; }
+        public int FastSpeed { get; set; }
 
-        public double DefaultSpeed { get; set; }
+        public int DefaultSpeed { get; set; }
 
-        public double SlowSpeed { get; set; }
+        public int SlowSpeed { get; set; }
 
-        public double SlowestSpeed { get; set; }
+        public int SlowestSpeed { get; set; }
+
+        public Common.Common.SpeedRank SpeedRank { get; set; } = Common.Common.SpeedRank.Unknown;
     }
 }

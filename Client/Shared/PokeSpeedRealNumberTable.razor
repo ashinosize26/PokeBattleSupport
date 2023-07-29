@@ -18,13 +18,13 @@
             <MudText Typo="Typo.body1">@context.Name</MudText>
         </MudTd>
         <MudTd DataLabel="Fastest">
-            <MudText Typo="Typo.body1">@context.FastestSpeed</MudText>
+            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fastest ? Color.Secondary : Color.Default)">@context.FastestSpeed</MudText>
         </MudTd>
         <MudTd DataLabel="Fast">
-            <MudText Typo="Typo.body1">@context.FastSpeed</MudText>
+            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fast ? Color.Secondary : Color.Default)">@context.FastSpeed</MudText>
         </MudTd>
         <MudTd DataLabel="Default">
-            <MudText Typo="Typo.body1">@context.DefaultSpeed</MudText>
+            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Default ? Color.Secondary : Color.Default)">@context.DefaultSpeed</MudText>
         </MudTd>
         <MudTd DataLabel="Slow">
             <MudText Typo="Typo.body1">@context.SlowSpeed</MudText>
@@ -70,11 +70,12 @@
                     {
                         No = pokeInfo.No,
                         Name = pokeInfo.Name,
-                        FastestSpeed = Common.CalcSpeedFastest(pokeInfo.S),
-                        FastSpeed = Common.CalcSpeedFast(pokeInfo.S),
-                        DefaultSpeed = Common.CalcSpeedDefault(pokeInfo.S),
-                        SlowSpeed = Common.CalcSpeedSlow(pokeInfo.S),
-                        SlowestSpeed = Common.CalcSpeedSlowest(pokeInfo.S)
+                        FastestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fastest),
+                        FastSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fast),
+                        DefaultSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Default),
+                        SlowSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slow),
+                        SlowestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slowest),
+                        SpeedRank = pokeInfo.SpeedRank,
                     });
             }
         };
@@ -86,11 +87,12 @@
                     {
                         No = pokeInfo.No,
                         Name = pokeInfo.Name,
-                        FastestSpeed = Common.CalcSpeedFastest(pokeInfo.S),
-                        FastSpeed = Common.CalcSpeedFast(pokeInfo.S),
-                        DefaultSpeed = Common.CalcSpeedDefault(pokeInfo.S),
-                        SlowSpeed = Common.CalcSpeedSlow(pokeInfo.S),
-                        SlowestSpeed = Common.CalcSpeedSlowest(pokeInfo.S)
+                        FastestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fastest),
+                        FastSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fast),
+                        DefaultSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Default),
+                        SlowSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slow),
+                        SlowestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Slowest),
+                        SpeedRank = pokeInfo.SpeedRank,
                     });
             }
         };

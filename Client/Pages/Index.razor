@@ -12,25 +12,32 @@ else
     @* ポケモン選択画面 *@
     <MudGrid Class="px-16 py-10">
         @* 自分 *@
-        <MudItem xs="12" sm="6">
+        <MudItem xs="12" sm="7">
             <MudText Typo="Typo.h5" Class="mb-4">自分のパーティ</MudText>
             <MudGrid>
                 @foreach (var pokeInfo in myParty)
                 {
-                    <MudItem xs="12" sm="6">
+                    <MudItem xs="12" sm="5">
                         <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo, Common.PartyOwner.I))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
                     </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
-                        <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
-                        <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
-                    </MudItem>                    
+                    <MudItem xs="12" sm="3">
+                            <PokeImageView PokeNo="@pokeInfo.No" Width="50" Height="50" />
+                            <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                            <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudRadioGroup T="Common.SpeedRank" SelectedOption="@pokeInfo.SpeedRank" SelectedOptionChanged="@( async(value) => await HandleSpeedRankChanged(value, pokeInfo))">
+                            <MudRadio Option="@(Common.SpeedRank.Fastest)" Dense="true" Color="Color.Primary">最速</MudRadio>
+                            <MudRadio Option="@(Common.SpeedRank.Fast)" Dense="true" Color="Color.Primary">準速</MudRadio>
+                            <MudRadio Option="@(Common.SpeedRank.Default)" Dense="true" Color="Color.Primary">無振</MudRadio>
+                        </MudRadioGroup>
+                    </MudItem>
                 }
             </MudGrid>
             <MudButton Class="mt-10" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => HandleClearClicked(Common.PartyOwner.I))">パーティのクリア</MudButton>
         </MudItem>
         @* 相手 *@
-        <MudItem xs="12" sm="6">
+        <MudItem xs="12" sm="5">
             <MudText Typo="Typo.h5" Class="mb-1">相手のパーティ</MudText>
             <MudGrid>
                 @foreach (var pokeInfo in yourParty)
@@ -39,7 +46,7 @@ else
                         <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo, Common.PartyOwner.You))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
+                        <PokeImageView PokeNo="@pokeInfo.No" Width="50" Height="50" />
                         <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
                         <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
                     </MudItem>
@@ -174,16 +181,30 @@ else
     /// <returns></returns>
     private void HandleClearClicked(Common.PartyOwner partyOwner)
     {
-        // パーティ情報をsession storageに保持
+        // パーティ情報をクリアしてsession storageに保持
         switch (partyOwner)
         {
             case Common.PartyOwner.I:
                 myParty = new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                sessionStorage.SetItemAsync("myParty", myParty);
                 break;
 
             case Common.PartyOwner.You:
                 yourParty = new PokeInfoModel[6] { new(), new(), new(), new(), new(), new() };
+                sessionStorage.SetItemAsync("yourParty", yourParty);
                 break;
         }
+    }
+
+    ///  <summary>
+    /// S実数値のランクラジオボタンが変わったときのコールバック用
+    /// </summary>
+    private async Task HandleSpeedRankChanged(Common.SpeedRank selectedValue, PokeInfoModel pokeInfo)
+    {
+        // 選択された値をセット
+        pokeInfo.SpeedRank = selectedValue;
+
+        // パーティ情報をsession storageに保持
+        await sessionStorage.SetItemAsync("myParty", myParty);
     }
 }

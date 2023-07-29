@@ -51,15 +51,15 @@
         List<double> defaultSpeeds = new List<double>();    // 無振
         foreach (var item in myParty.Where(x => !string.IsNullOrEmpty(x.Name)))
         {
-            fastestSpeeds.Add(Common.CalcSpeedFastest(item.S));
-            fastSpeeds.Add(Common.CalcSpeedFast(item.S));
-            defaultSpeeds.Add(Common.CalcSpeedDefault(item.S));
+            fastestSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fastest));
+            fastSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fast));
+            defaultSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Default));
         };
         foreach (var item in yourParty.Where(x => !string.IsNullOrEmpty(x.Name)))
         {
-            fastestSpeeds.Add(Common.CalcSpeedFastest(item.S));
-            fastSpeeds.Add(Common.CalcSpeedFast(item.S));
-            defaultSpeeds.Add(Common.CalcSpeedDefault(item.S));
+            fastestSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fastest));
+            fastSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Fast));
+            defaultSpeeds.Add(Common.CalcSpeedRealNumber((int)item.S, Common.SpeedRank.Default));
         };
         Series.Add(new ChartSeries()
             {

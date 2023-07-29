@@ -21,6 +21,19 @@ namespace PokeBattleSupport.Client.Common
         }
 
         /// <summary>
+        /// S種族値
+        /// </summary>
+        public enum SpeedRank
+        {
+            Fastest,
+            Fast,
+            Default,
+            Slow,
+            Slowest,
+            Unknown
+        }
+
+        /// <summary>
         /// タイプの画像のパスを取得
         /// </summary>
         /// <param name="japaneseTypeName">タイプ名（日本語）</param>
@@ -159,58 +172,44 @@ namespace PokeBattleSupport.Client.Common
         }
 
         /// <summary>
-        /// 最速の計算
+        /// S実数値の計算
         /// </summary>
         /// <param name="baseStat"></param>
         /// <returns></returns>
-        public static double CalcSpeedFastest(double baseStat)
+        public static int CalcSpeedRealNumber(int baseStat, SpeedRank speedRank)
         {
+            int realNumber = 0;
             if (baseStat == 0) return 0;
-            return Math.Floor((baseStat + 52) * 1.1);
-        }
 
-        /// <summary>
-        /// 準速の計算
-        /// </summary>
-        /// <param name="baseStat"></param>
-        /// <returns></returns>
-        public static double CalcSpeedFast(double baseStat)
-        {
-            if (baseStat == 0) return 0;
-            return baseStat + 52;
-        }
+            switch (speedRank)
+            {
+                case SpeedRank.Fastest:
+                    // 最速
+                    realNumber = (int)Math.Floor((baseStat + 52) * 1.1);
+                    break;
 
-        /// <summary>
-        /// 無振の計算
-        /// </summary>
-        /// <param name="baseStat"></param>
-        /// <returns></returns>
-        public static double CalcSpeedDefault(double baseStat)
-        {
-            if (baseStat == 0) return 0;
-            return baseStat + 20;
-        }
+                case SpeedRank.Fast:
+                    // 準速
+                    realNumber = baseStat + 52;
+                    break;
 
-        /// <summary>
-        /// 下降の計算
-        /// </summary>
-        /// <param name="baseStat"></param>
-        /// <returns></returns>
-        public static double CalcSpeedSlow(double baseStat)
-        {
-            if (baseStat == 0) return 0;
-            return Math.Floor((baseStat + 20) * 0.9);
-        }
+                case SpeedRank.Default:
+                    // 無振
+                    realNumber = baseStat + 20;
+                    break;
 
-        /// <summary>
-        /// 最遅の計算
-        /// </summary>
-        /// <param name="baseStat"></param>
-        /// <returns></returns>
-        public static double CalcSpeedSlowest(double baseStat)
-        {
-            if (baseStat == 0) return 0;
-            return Math.Floor((baseStat + 5) * 0.9);
+                case SpeedRank.Slow:
+                    // 下降
+                    realNumber = (int)Math.Floor((baseStat + 20) * 0.9);
+                    break;
+
+                case SpeedRank.Slowest:
+                    // 最遅
+                    realNumber = (int)Math.Floor((baseStat + 5) * 0.9);
+                    break;
+            }
+
+            return realNumber;
         }
     }
 }
