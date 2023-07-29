@@ -2,16 +2,15 @@
 
 @* S実数値 *@
 <PageTitle>S実数値</PageTitle>
-<MudGrid Class="mx-4 my-6">
-    <MudItem xs="12">
-        <MudText Typo="Typo.h5">S実数値</MudText>
-    </MudItem>
-    @* 自分&相手 *@
-    <MudItem xs="12">
-        <PokeSpeedRealNumberChart/>
-        <PokeSpeedRealNumberTable/>
-    </MudItem>
-</MudGrid>
+<MudContainer>
+    <MudGrid Class="px-16 py-10">
+        @* 自分&相手 *@
+        <MudItem xs="12">
+            <PokeSpeedRealNumberChart/>
+            <PokeSpeedRealNumberTable/>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 
 @code {
 

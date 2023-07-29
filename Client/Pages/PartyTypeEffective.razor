@@ -3,16 +3,13 @@
 
 @* タイプ相性 *@
 <PageTitle>タイプ耐性</PageTitle>
-<MudGrid Class="mx-4 my-6">
-    <MudItem xs="12">
-        <MudText Typo="Typo.h5">タイプ相性</MudText>
-    </MudItem>
+<MudGrid Class="px-10 py-10">
     @* 自分 *@
-    <MudItem xs="12">
+    <MudItem xs="12" sm="6">
         <PokeTypeEffectiveView partyOwner="@Common.PartyOwner.I" />
     </MudItem>
     @* 相手 *@
-    <MudItem xs="12">
+    <MudItem xs="12" sm="6">
         <PokeTypeEffectiveView partyOwner="@Common.PartyOwner.You" />
     </MudItem>
 </MudGrid>

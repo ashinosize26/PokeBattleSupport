@@ -122,7 +122,7 @@ namespace PokeBattleSupport.Client.Common
             switch (TypeEffectiveValue)
             {
                 case 4:
-                    mark.MarkText = "● (4)";
+                    mark.MarkText = "●4";
                     mark.MarkColor = MudBlazor.Color.Secondary;
                     break;
 
@@ -142,7 +142,7 @@ namespace PokeBattleSupport.Client.Common
                     break;
 
                 case 0.25:
-                    mark.MarkText = "▲ (0.25)";
+                    mark.MarkText = "▲1/4";
                     mark.MarkColor = MudBlazor.Color.Info;
                     break;
 

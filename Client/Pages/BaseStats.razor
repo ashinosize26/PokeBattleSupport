@@ -3,12 +3,10 @@
 
 @* 種族値 *@
 <PageTitle>種族値</PageTitle>
-<MudGrid Class="mx-4 my-6">
-    <MudItem xs="12">
-        <MudText Typo="Typo.h5">種族値</MudText>
-    </MudItem>
+<MudGrid Class="px-16 py-10">
     @* 自分 *@
     <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.h5" Class="mb-4">自分のパーティ</MudText>
         <MudGrid>
             @foreach (var pokeInfo in myParty)
             {
@@ -20,6 +18,7 @@
     </MudItem>
     @* 相手 *@
     <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.h5" Class="mb-4">相手のパーティ</MudText>
         <MudGrid>
             @foreach (var pokeInfo in yourParty)
             {

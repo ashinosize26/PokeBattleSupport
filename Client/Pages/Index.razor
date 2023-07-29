@@ -10,10 +10,10 @@
 else
 {
     @* ポケモン選択画面 *@
-    <MudGrid Class="mx-4 my-6">
+    <MudGrid Class="px-16 py-10">
         @* 自分 *@
         <MudItem xs="12" sm="6">
-            <MudText Typo="Typo.h5" Class="mb-1">自分のパーティ</MudText>
+            <MudText Typo="Typo.h5" Class="mb-4">自分のパーティ</MudText>
             <MudGrid>
                 @foreach (var pokeInfo in myParty)
                 {
@@ -71,7 +71,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // 全てのポケモンの名前を取得
-        pokeNames = await Http.GetFromJsonAsync<string[]>("api/PokeNames") ?? Array.Empty<string>();
+        pokeNames = await Http.GetFromJsonAsync<string[]>("api/Poke/Names") ?? Array.Empty<string>();
 
         // Session Storageからパーティ情報の読み込み
         myParty = await sessionStorage.GetItemAsync<PokeInfoModel[]>("myParty") ?? new PokeInfoModel[6] { new (), new (), new (), new (), new (), new () };
@@ -124,13 +124,9 @@ else
         }
         else
         {
-            // No、タイプを取得
-            var typesParameters = new Dictionary<string, string>()
-                {
-                    ["name"] = pokeInfo.Name
-                };
-            var typesUrl = $"api/PokeType?{await new FormUrlEncodedContent(typesParameters).ReadAsStringAsync()}";
-            PokeTypeModel? types = await Http.GetFromJsonAsync<PokeTypeModel>(typesUrl);
+            // 基本情報を取得
+            var typesUrl = $"api/Poke/{pokeInfo.Name}";
+            PokeSimpleInfoModel? types = await Http.GetFromJsonAsync<PokeSimpleInfoModel>(typesUrl);
             if (types is not null)
             {
                 pokeInfo.No = types.No;
@@ -141,10 +137,9 @@ else
             // 種族値を取得
             var baseStatsParameters = new Dictionary<string, string>()
                 {
-                    ["name"] = pokeInfo.Name,
                     ["generation"] = Common.CurrentGeneration.ToString()
                 };
-            var baseStatsUrl = $"api/PokeBaseStats?{await new FormUrlEncodedContent(baseStatsParameters).ReadAsStringAsync()}";
+            var baseStatsUrl = $"api/Poke/{pokeInfo.Name}/BaseStats/?{await new FormUrlEncodedContent(baseStatsParameters).ReadAsStringAsync()}";
             PokeBaseStatsModel? baseStats = await Http.GetFromJsonAsync<PokeBaseStatsModel>(baseStatsUrl);
             if (baseStats is not null)
             {

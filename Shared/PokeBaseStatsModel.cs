@@ -2,10 +2,6 @@
 {
     public class PokeBaseStatsModel
     {
-        public string Name { get; set; } = string.Empty;
-
-        public long No { get; set; }
-
         public long H { get; set; }
 
         public long A { get; set; }

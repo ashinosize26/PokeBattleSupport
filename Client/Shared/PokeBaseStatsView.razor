@@ -1,4 +1,4 @@
-﻿<MudPaper Height="180px" Class="pl-2 pr-3 py-3">
+﻿<MudPaper Height="220px" Class="pl-2 pr-3 py-4">
     <MudGrid>
         <MudItem xs="12" sm="4">
             <MudStack Spacing="2">
@@ -7,13 +7,13 @@
             </MudStack>
         </MudItem>
         <MudItem xs="12" sm="8">
-            <MudStack Spacing="1">
+            <MudStack Spacing="2">
                 @foreach (var (label, index) in BaseStatLabels.Select((value, index) => (value, index)))
                 {
-                    <MudStack Row="true" Spacing="2">
-                        <MudText Typo="Typo.body2" Style="width: 24px;">@label</MudText>
+                    <MudStack Row="true" Spacing="3">
+                        <MudText Typo="Typo.body1" Style="width: 24px;">@label</MudText>
                         <MudSlider Size="Size.Small" Value="@BaseStatValues[index]" Variant="Variant.Filled" Min="1" Max="255" Color="@BaseStatBarColor" />
-                        <MudText Typo="Typo.body2" Align="Align.Right" Style="width: 40px;">@BaseStatValues[index]</MudText>
+                        <MudText Typo="Typo.body1" Align="Align.Right" Style="width: 40px;">@BaseStatValues[index]</MudText>
                     </MudStack>
                 }
             </MudStack>

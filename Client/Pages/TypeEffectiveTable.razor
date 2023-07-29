@@ -4,7 +4,7 @@
 
 @* タイプ相性表 *@
 <PageTitle>タイプ相性表</PageTitle>
-<MudGrid Class="mx-4 my-6">
+<MudGrid Class="px-16 py-10">
     <MudTable Items="@elements" Hover="true" Breakpoint="Breakpoint.None" Dense="true" Striped="true" Bordered="true">
         <HeaderContent>
             <MudTh></MudTh>
@@ -33,7 +33,7 @@
     /// <summary>
     /// テーブルデータ
     /// </summary>
-    private List<TypeEffectiveRowModel> elements = new();
+    private List<Models.TypeEffectiveRowModel> elements = new();
 
     /// <summary>
     /// コンストラクタ
@@ -41,38 +41,38 @@
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
-        // タイプ相性データを取得
-        List <TypeEffectiveModel> typeEffectiveList = await Http.GetFromJsonAsync<List<TypeEffectiveModel>>("api/PokeType/EffectiveTable") ?? new();
+            // タイプ相性データを取得
+        List<TypeEffectiveTableModel> typeEffectiveList = await Http.GetFromJsonAsync<List<TypeEffectiveTableModel>>("api/Poke/TypeEffectiveTable") ?? new();
 
         // タイプ相性表を作成
         foreach (var typeEffective in typeEffectiveList)
         {
 
-            TypeEffectiveRowModel typeEffectiveRowModel = new()
+            Models.TypeEffectiveRowModel typeEffectiveRowModel = new()
+            {
+                AttackTypeName = typeEffective.AttackType,
+                Marks = new TypeEffectiveMarkModel[18]
                 {
-                    AttackTypeName = typeEffective.AttackType,
-                    Marks = new TypeEffectiveMarkModel[18]
-                    {
-                        Common.GetTypeEffectiveMark(typeEffective.NormalEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.FireEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.WaterEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.ElectricEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.GrassEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.IceEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.FightingEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.PoisonEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.GroundEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.FlyingEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.PsychicEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.BugEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.RockEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.GhostEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.DragonEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.DarkEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.SteelEffectiveValue),
-                        Common.GetTypeEffectiveMark(typeEffective.FairyEffectiveValue)
-                    }
-                };
+                    Common.GetTypeEffectiveMark(typeEffective.NormalEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.FireEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.WaterEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.ElectricEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.GrassEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.IceEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.FightingEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.PoisonEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.GroundEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.FlyingEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.PsychicEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.BugEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.RockEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.GhostEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.DragonEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.DarkEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.SteelEffectiveValue),
+                    Common.GetTypeEffectiveMark(typeEffective.FairyEffectiveValue)
+                }
+            };
             elements.Add(typeEffectiveRowModel);
         }
     }

@@ -9,8 +9,8 @@
             <MudTh Style="vertical-align: top;">
                 <MudStack>
                     <PokeImageView PokeNo="@pokeInfo.No" Width="42" Height="42" />
-                    <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
-                    <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
+                    <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" SimpleText="true" />
+                    <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" SimpleText="true" />
                 </MudStack>
             </MudTh>
         }
@@ -19,12 +19,12 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="AttackTypeName">
-            <PokeTypeView PokeType="@context.TypeName" />
+            <PokeTypeView PokeType="@context.TypeName" SimpleText="true"/>
         </MudTd>
         @foreach (var (value, index) in party.Select((value, index) => (value, index)))
         {
             <MudTd DataLabel="@($"Poke{index}")">
-                <MudText Typo="Typo.h6" Color="@context.Marks[index].MarkColor" Align="Align.Center">@context.Marks[index].MarkText</MudText>
+                <MudText Typo="Typo.body1" Color="@context.Marks[index].MarkColor" Align="Align.Center">@context.Marks[index].MarkText</MudText>
             </MudTd>
         }
         <MudTd DataLabel="SuperEffective">
@@ -88,12 +88,7 @@
             else
             {
                 // ポケモンが指定済みの場合
-                var parameters = new Dictionary<string, string>()
-                    {
-                        ["firstType"] = pokeInfo.FirstType,
-                        ["secondType"] = pokeInfo.SecondType
-                    };
-                var url = $"api/PokeType/Effective?{await new FormUrlEncodedContent(parameters).ReadAsStringAsync()}";
+                var url = $"api/Poke/{pokeInfo.Name}/TypeEffective";
                 effective = await Http.GetFromJsonAsync<PokeTypeEffectiveModel>(url) ?? new ();
             }
             effectiveList.Add(effective);

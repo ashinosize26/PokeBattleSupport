@@ -8,10 +8,6 @@ namespace PokeBattleSupport.Shared
 {
     public class PokeTypeEffectiveModel
     {
-        public string FirstType { get; set; } = string.Empty;
-
-        public string SecondType { get; set; } = string.Empty;
-
         public double NormalEffectiveValue { get; set; } = 1;
 
         public double FireEffectiveValue { get; set; } = 1;

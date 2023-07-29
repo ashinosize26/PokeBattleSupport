@@ -1,6 +1,6 @@
 namespace PokeBattleSupport.Shared
 {
-    public class PokeTypeModel
+    public class PokeSimpleInfoModel
     {
         public string Name { get; set; } = string.Empty;
 
