@@ -1,4 +1,5 @@
-﻿namespace PokeBattleSupport.Client.Models
+﻿using static PokeBattleSupport.Client.Common.Common;
+namespace PokeBattleSupport.Client.Models
 {
     public class PokeInfoModel
     {
@@ -24,6 +25,8 @@
 
         public long Total { get; set; }
 
-        public Common.Common.SpeedRank SpeedRank { get; set; } = Common.Common.SpeedRank.Unknown;
+        public SpeedRank SpeedRank { get; set; } = SpeedRank.Unknown;
+
+        public BattleItem BattleItem { get; set; } = BattleItem.None;
     }
 }

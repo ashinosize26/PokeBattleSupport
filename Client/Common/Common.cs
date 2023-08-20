@@ -34,6 +34,15 @@ namespace PokeBattleSupport.Client.Common
         }
 
         /// <summary>
+        /// 持ち物
+        /// </summary>
+        public enum BattleItem
+        {
+            ChoiceScarf,
+            None
+        }
+
+        /// <summary>
         /// タイプの画像のパスを取得
         /// </summary>
         /// <param name="japaneseTypeName">タイプ名（日本語）</param>

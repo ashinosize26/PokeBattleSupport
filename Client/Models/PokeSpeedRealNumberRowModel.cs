@@ -1,10 +1,13 @@
-﻿namespace PokeBattleSupport.Client.Models
+﻿using static PokeBattleSupport.Client.Common.Common;
+namespace PokeBattleSupport.Client.Models
 {
     public class PokeSpeedRealNumberRowModel
     {
         public long No { get; set; }
 
         public string Name { get; set; } = string.Empty;
+
+        public bool ChoiceScarf { get; set; } = false;
 
         public int FastestSpeed { get; set; }
 
@@ -16,6 +19,6 @@
 
         public int SlowestSpeed { get; set; }
 
-        public Common.Common.SpeedRank SpeedRank { get; set; } = Common.Common.SpeedRank.Unknown;
+        public SpeedRank SpeedRank { get; set; } = SpeedRank.Unknown;
     }
 }

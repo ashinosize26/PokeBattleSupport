@@ -4,6 +4,7 @@
     <HeaderContent>
         <MudTh></MudTh>
         <MudTh></MudTh>
+        <MudTh>スカーフ</MudTh>
         <MudTh>最速</MudTh>
         <MudTh>準速</MudTh>
         <MudTh>無振</MudTh>
@@ -17,14 +18,17 @@
         <MudTd>
             <MudText Typo="Typo.body1">@context.Name</MudText>
         </MudTd>
+        <MudTd>
+            <MudText Typo="Typo.h5">@(context.ChoiceScarf == true ? "○" : "")</MudText>
+        </MudTd>
         <MudTd DataLabel="Fastest">
-            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fastest ? Color.Secondary : Color.Default)">@context.FastestSpeed</MudText>
+                <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fastest ? Color.Secondary : Color.Default)">@(context.FastestSpeed + (context.ChoiceScarf ? $" ({Math.Floor(context.FastestSpeed * 1.5)})" : ""))</MudText>
         </MudTd>
         <MudTd DataLabel="Fast">
-            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fast ? Color.Secondary : Color.Default)">@context.FastSpeed</MudText>
+                <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Fast ? Color.Secondary : Color.Default)">@(context.FastSpeed + (context.ChoiceScarf ? $" ({Math.Floor(context.FastSpeed * 1.5)})" : ""))</MudText>
         </MudTd>
         <MudTd DataLabel="Default">
-            <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Default ? Color.Secondary : Color.Default)">@context.DefaultSpeed</MudText>
+                <MudText Typo="Typo.body1" Color="@(context.SpeedRank == Common.SpeedRank.Default ? Color.Secondary : Color.Default)">@(context.DefaultSpeed + (context.ChoiceScarf ? $"({Math.Floor(context.DefaultSpeed * 1.5)})" : ""))</MudText>
         </MudTd>
         <MudTd DataLabel="Slow">
             <MudText Typo="Typo.body1">@context.SlowSpeed</MudText>
@@ -79,6 +83,7 @@
                     {
                         No = pokeInfo.No,
                         Name = pokeInfo.Name,
+                        ChoiceScarf = pokeInfo.BattleItem == Common.BattleItem.ChoiceScarf ? true : false,
                         FastestSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fastest),
                         FastSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Fast),
                         DefaultSpeed = Common.CalcSpeedRealNumber((int)pokeInfo.S, Common.SpeedRank.Default),

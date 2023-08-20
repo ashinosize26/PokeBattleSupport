@@ -17,7 +17,7 @@ else
             <MudGrid>
                 @foreach (var pokeInfo in myParty)
                 {
-                    <MudItem xs="12" sm="5">
+                    <MudItem xs="12" sm="4">
                         <MudAutocomplete T="string" Label="ポケモン" Value="@pokeInfo.Name" ValueChanged="@( async(value) => await HandlePokeSelected(value, pokeInfo, Common.PartyOwner.I))" SearchFunc="@( async(value) => HandlePokeSearchFunc(value))" ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false" />
                     </MudItem>
                     <MudItem xs="12" sm="3">
@@ -25,12 +25,15 @@ else
                             <PokeTypeView PokeType="@pokeInfo.FirstType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
                             <PokeTypeView PokeType="@pokeInfo.SecondType" ShowSample="@string.IsNullOrEmpty(pokeInfo.Name)" />
                     </MudItem>
-                    <MudItem xs="12" sm="4">
-                        <MudRadioGroup T="Common.SpeedRank" SelectedOption="@pokeInfo.SpeedRank" SelectedOptionChanged="@( async(value) => await HandleSpeedRankChanged(value, pokeInfo))">
-                            <MudRadio Option="@(Common.SpeedRank.Fastest)" Dense="true" Color="Color.Primary">最速</MudRadio>
-                            <MudRadio Option="@(Common.SpeedRank.Fast)" Dense="true" Color="Color.Primary">準速</MudRadio>
-                            <MudRadio Option="@(Common.SpeedRank.Default)" Dense="true" Color="Color.Primary">無振</MudRadio>
-                        </MudRadioGroup>
+                    <MudItem xs="12" sm="5">
+                        <MudStack Row="true">
+                            <MudRadioGroup T="Common.SpeedRank" SelectedOption="@pokeInfo.SpeedRank" SelectedOptionChanged="@( async(value) => await HandleSpeedRankChanged(value, pokeInfo))">
+                                <MudRadio Option="@(Common.SpeedRank.Fastest)" Dense="true" Color="Color.Primary">最速</MudRadio>
+                                <MudRadio Option="@(Common.SpeedRank.Fast)" Dense="true" Color="Color.Primary">準速</MudRadio>
+                                <MudRadio Option="@(Common.SpeedRank.Default)" Dense="true" Color="Color.Primary">無振</MudRadio>
+                            </MudRadioGroup>
+                            <MudCheckBox T="bool" Checked="@(pokeInfo.BattleItem == Common.BattleItem.ChoiceScarf ? true : false)" Label="こだわりスカーフ" Color="Color.Warning" Dense="true" CheckedChanged="@(async(value) => await HandleScarfChanged(value, pokeInfo))"></MudCheckBox>
+                        </MudStack>
                     </MudItem>
                 }
             </MudGrid>
@@ -203,6 +206,28 @@ else
     {
         // 選択された値をセット
         pokeInfo.SpeedRank = selectedValue;
+
+        // パーティ情報をsession storageに保持
+        await sessionStorage.SetItemAsync("myParty", myParty);
+    }
+
+    /// <summary>
+    /// こだわりスカーフチェックボックスのコールバック用
+    /// </summary>
+    /// <param name="selectedValue"></param>
+    /// <param name="pokeInfo"></param>
+    /// <returns></returns>
+    private async Task HandleScarfChanged(bool checkedScarf, PokeInfoModel pokeInfo)
+    {
+        // チェック状態をセット
+        if (checkedScarf)
+        {
+            pokeInfo.BattleItem = Common.BattleItem.ChoiceScarf;
+        }
+        else
+        {
+            pokeInfo.BattleItem = Common.BattleItem.None;
+        }
 
         // パーティ情報をsession storageに保持
         await sessionStorage.SetItemAsync("myParty", myParty);
